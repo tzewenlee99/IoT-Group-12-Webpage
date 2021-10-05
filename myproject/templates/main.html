@@ -6,5 +6,15 @@
 </head>
 <body>
     <h1>Hello, World!</h1>
+    <ul id="navigation">
+    {% for item in wl_data %}
+        <li><p>{{item.datetime}}</p></li>
+        <li><p>{{item.value}}</p></li>
+    {% endfor %}
+    </ul>
+
+    {% for item in img_data %}
+        <img src={{item}}>
+    {% endfor %}
 </body>
 </html>
