@@ -1,20 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Smart Water Bowl</title>
 </head>
 <body>
-    <h1>Hello, World!</h1>
-    <ul id="navigation">
-    {% for item in wl_data %}
-        <li><p>{{item.datetime}}</p></li>
-        <li><p>{{item.value}}</p></li>
-    {% endfor %}
-    </ul>
+    <header>  
+        <h1>Smart Water Bowl</h1>
+    </header>
+    <div class="body">
+        <ul id="navigation">
+        {% for item in wl_data %}
+            <li><p>{{item.datetime}}</p></li>
+            <li><p>{{item.value}}</p></li>
+        {% endfor %}
+        </ul>
 
-    {% for item in img_data %}
-        <img src={{item}}>
-    {% endfor %}
+        {% for item in img_data %}
+            <img src={{item}}>
+        {% endfor %}
+    </div>
 </body>
 </html>
