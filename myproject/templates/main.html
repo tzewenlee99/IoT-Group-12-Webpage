@@ -1,24 +1,106 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+    <link href="{{ url_for('static', filename='css/main.css') }}" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" rel="stylesheet">
     <meta charset="UTF-8">
     <title>Smart Water Bowl</title>
 </head>
 <body>
-    <header>  
-        <h1>Smart Water Bowl</h1>
-    </header>
-    <div class="mainBody">
-        <ul id="navigation">
-        {% for item in wl_data %}
-            <li><p>{{item.DateTime}}</p></li>
-        {% endfor %}
-        </ul>
+<header>
+    <h1>Smart Water Bowl</h1>
+</header>
 
-        {% for item in img_data %}
-            <img src={{item}}>
-        {% endfor %}
+<div class="container" style="text-align: center;">
+    <div class="row">
+        <div class="col-3" style="border-style: solid;">
+            {% for item in latest_data %}
+            <p>Your tank water level is:</p>
+                {% if item.tankPercentage < 20 %}
+                    <p style="font-size: 50px;color:red;">{{item.tankPercentage}}%</p>
+                    <p>**Re-filling your water tank is recommended</p>
+                {% elif item.tankPercentage < 40 %}
+                    <p style="font-size: 50px;color:indianred;">{{item.tankPercentage}}%</p>
+                {% elif item.tankPercentage < 60 %}
+                    <p style="font-size: 50px;color:palevioletred;">{{item.tankPercentage}}%</p>
+                {% elif item.tankPercentage < 80 %}
+                    <p style="font-size: 50px;color:yellow;">{{item.tankPercentage}}%</p>
+                {% else %}
+                    <p style="font-size: 50px;color:green;">{{item.tankPercentage}}%</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="col-3" style="border-style: solid">
+            {% for item in latest_data %}
+            <p>Your bowl water level is:</p>
+                {% if item.bowlPercentage < 20 %}
+                    <p style="font-size: 50px;color:red;">{{item.bowlPercentage}}%</p>
+                {% elif item.bowlPercentage < 40 %}
+                    <p style="font-size: 50px;color:indianred;">{{item.bowlPercentage}}%</p>
+                {% elif item.bowlPercentage < 60 %}
+                    <p style="font-size: 50px;color:hotpink;">{{item.bowlPercentage}}%</p>
+                {% elif item.bowlPercentage < 80 %}
+                    <p style="font-size: 50px;color:yellow;">{{item.bowlPercentage}}%</p>
+                {% else %}
+                    <p style="font-size: 50px;color:green;">{{item.bowlPercentage}}%</p>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="col-6">
+            <canvas id="myChart"></canvas>
+        </div>
     </div>
+    <div class="row">
+        <div class="col-4">
+            1 of 3
+        </div>
+        <div class="col-8">
+            {% for item in img_data %}-->
+            <img alt="Responsive image" class="img-fluid" src={{item}}>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // === include 'setup' then 'config' above ===
+    const graph_data = JSON.parse('{{ graph_data|tojson }}')
+    const labels = graph_data.map((data) => data.dateTime);
+    const tank_levels = graph_data.map((data) => data.tankPercentage);
+    const bowl_levels = graph_data.map((data) => data.bowlPercentage);
+    const data = {
+        labels: labels,
+        datasets: [{
+            label: 'Water Tank Level',
+            backgroundColor: 'rgb(255, 99, 132)',
+            borderColor: 'rgb(255, 99, 132)',
+            data: tank_levels,
+        },{
+            label: 'Water Bowl Level',
+            backgroundColor: 'rgb(99,125,255)',
+            borderColor: 'rgb(99,125,255)',
+            data: bowl_levels,
+        }]
+    };
+    const config = {
+        type: 'line',
+        data: data,
+        options: {}
+    };
+    var myChart = new Chart(
+        document.getElementById('myChart'),
+        config
+    );
+</script>
+<script crossorigin="anonymous"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
 </body>
 </html>
