@@ -8,5 +8,4 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     data = db_init()
-    print(data)
-    return render_template('main.html', wl_data=data['water_level'], img_data=data['images'])
+    return render_template('main.html', wl_data=list(data['test'].values())[-10:], img_data=[])

@@ -3,12 +3,12 @@ from firebase_admin import credentials
 from firebase_admin import db
 
 # Fetch the service account key JSON file contents
-cred = credentials.Certificate('data/water-level-db7ff-firebase-adminsdk-7etxl-30fbcd22ee.json')
+cred = credentials.Certificate('data/iot5506-firebase-adminsdk-82jka-4dd6217eae.json')
 
 # Initialize the app with a service account, granting admin privileges
 firebase_admin.initialize_app(cred, {
-    'databaseURL': 'https://water-level-db7ff-default-rtdb.asia-southeast1.firebasedatabase.app/',
-    'storageBucket': 'gs://water-level-db7ff.appspot.com'
+    'databaseURL': 'https://iot5506-default-rtdb.firebaseio.com/',
+    'storageBucket': 'gs://iot5506.appspot.com'
 })
 
 
