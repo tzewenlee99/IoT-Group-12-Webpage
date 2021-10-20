@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Water Bowl Dashboard</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/dashboard.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <nav class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0">
+      <a class="navbar-brand col-sm-3 col-md-2 mr-0" href="#">Water Bowl Dashboard</a>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar">
+          <div class="sidebar-sticky">
+            <ul class="nav flex-column">
+              <li class="nav-item">
+                <a class="nav-link active" href="#">
+                  <span data-feather="home"></span>
+                  Dashboard <span class="sr-only">(current)</span>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="/images">
+                  <span data-feather="layers"></span>
+                  Images
+                </a>
+              </li>
+            </ul>
+
+          </div>
+        </nav>
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 pt-3 px-4">
+          <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2 mb-3 border-bottom">
+            <h1 class="h2">Dashboard</h1>
+          </div>
+          <div class="row">
+            <div class="col-md-4">
+               <div class="col-md-12" style="background-color: #e8e8e8;border-style: solid;border-radius: 25px;padding: 20px;">
+                  {% for item in latest_data %}
+                    <p>Your tank water level is:</p>
+                        {% if item.tankPercentage < 20 %}
+                            <p style="font-size: 40px;color:red;">{{item.tankPercentage}}%</p>
+                            <p>**Re-filling your water tank is recommended</p>
+                        {% elif item.tankPercentage < 40 %}
+                            <p style="font-size: 40px;color:#f37241;">{{item.tankPercentage}}%</p>
+                        {% elif item.tankPercentage < 60 %}
+                            <p style="font-size: 40px;color:#eecd64;">{{item.tankPercentage}}%</p>
+                        {% elif item.tankPercentage < 80 %}
+                            <p style="font-size: 40px;color:#adbf43;">{{item.tankPercentage}}%</p>
+                        {% else %}
+                            <p style="font-size: 40px;color:limegreen;">{{item.tankPercentage}}%</p>
+                        {% endif %}
+                    {% endfor %}
+               </div>
+            </div>
+            <div class="col-md-4">
+               <div class="col-md-12" style="background-color: #e8e8e8;border-style: solid;border-radius: 25px;padding: 20px;">
+                  {% for item in latest_data %}
+                    <p>Your bowl water level is:</p>
+                        {% if item.bowlPercentage < 20 %}
+                            <p style="font-size: 40px;color:red;">{{item.bowlPercentage}}%</p>
+                        {% elif item.bowlPercentage < 40 %}
+                            <p style="font-size: 40px;color:#f37241;">{{item.bowlPercentage}}%</p>
+                        {% elif item.bowlPercentage < 60 %}
+                            <p style="font-size: 40px;color:#eecd64;">{{item.bowlPercentage}}%</p>
+                        {% elif item.bowlPercentage < 80 %}
+                            <p style="font-size: 40px;color:#adbf43;">{{item.bowlPercentage}}%</p>
+                        {% else %}
+                            <p style="font-size: 40px;color:limegreen;">{{item.bowlPercentage}}%</p>
+                        {% endif %}
+                    {% endfor %}
+               </div>
+            </div>
+          </div>
+
+
+
+          <canvas class="my-4" id="myChart" width="900" height="380"></canvas>
+        </main>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script>window.jQuery || document.write('<script src="../static/js/jquery-slim.min.js"><\/script>')</script>
+    <script src="../static/js/vendor/popper.min.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/feather-icons/dist/feather.min.js"></script>
+    <script>
+      feather.replace()
+    </script>
+
+    <!-- Graphs -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.1/Chart.min.js"></script>
+    <script>
+      var ctx = document.getElementById("myChart");
+      const graph_data = JSON.parse('{{ graph_data|tojson }}')
+      const labels = graph_data.map((data) => data.dateTime);
+      const tank_levels = graph_data.map((data) => data.tankPercentage);
+      const bowl_levels = graph_data.map((data) => data.bowlPercentage);
+      var myChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels,
+          datasets: [{
+            data: tank_levels,
+            label: "Water Tank Level",
+            lineTension: 0,
+            backgroundColor: 'transparent',
+            borderColor: '#007bff',
+            borderWidth: 4,
+            pointBackgroundColor: '#007bff'
+          },{
+            data: bowl_levels,
+            label: "Water Bowl Level",
+            lineTension: 0,
+            backgroundColor: 'transparent',
+            borderColor: 'rgb(255, 99, 132)',
+            borderWidth: 4,
+            pointBackgroundColor: 'rgb(255, 99, 132)'
+          }]
+        },
+        options: {
+          scales: {
+            yAxes: [{
+              ticks: {
+                beginAtZero: false
+              }
+            }]
+          },
+          legend: {
+            display: true,
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
