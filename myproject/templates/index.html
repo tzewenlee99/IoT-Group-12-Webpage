@@ -112,7 +112,7 @@
     <script>
       var ctx = document.getElementById("myChart");
       const graph_data = JSON.parse('{{ graph_data|tojson }}')
-      const labels = graph_data.map((data) => data.dateTime);
+      const labels = graph_data.map((data) => data.DateTime);
       const tank_levels = graph_data.map((data) => data.tankPercentage);
       const bowl_levels = graph_data.map((data) => data.bowlPercentage);
       var myChart = new Chart(ctx, {
